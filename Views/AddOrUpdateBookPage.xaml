@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="KnjiskiMoljac.Views.AddOrUpdateBookPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:viewmodel="clr-namespace:KnjiskiMoljac.ViewModels"
+    Title="Knjiga"
+    x:DataType="viewmodel:AddOrUpdateBookViewModel">
+
+    <ContentPage.Resources>
+        <Style x:Key="InvalidEntryStyle" TargetType="Entry">
+            <Setter Property="TextColor" Value="Red" />
+            <Setter Property="PlaceholderColor" Value="Red" />
+        </Style>
+    </ContentPage.Resources>
+
+    <VerticalStackLayout Margin="20">
+        <Entry Placeholder="Naslov" Text="{Binding BookTitle}">
+           <Entry.Behaviors>
+              <toolkit:TextValidationBehavior 
+                  InvalidStyle="{StaticResource InvalidEntryStyle}"
+                  Flags="ValidateOnValueChanged"
+                  IsNotValid="{Binding TitleIsNotValid}"
+                  MinimumLength="1" />
+          </Entry.Behaviors>
+        </Entry>
+        <Label 
+            Style="{StaticResource ErrorLabel}" 
+            Text="Naslov knjige je obavezan"
+            IsVisible="{Binding TitleIsNotValid}" />
+        <Entry Placeholder="Pisac" Text="{Binding BookAuthor}">
+            <Entry.Behaviors>
+                <toolkit:TextValidationBehavior 
+                    InvalidStyle="{StaticResource InvalidEntryStyle}"
+                    Flags="ValidateOnValueChanged"
+                    IsNotValid="{Binding AuthorIsNotValid}"
+                    MinimumLength="1" />
+            </Entry.Behaviors>
+        </Entry>
+        <Label 
+            Style="{StaticResource ErrorLabel}" 
+            Text="Pisac knjige je obavezan"
+            IsVisible="{Binding AuthorIsNotValid}" />
+        <Entry Placeholder="Slika knjige" Text="{Binding BookImageUrl}" />
+        <HorizontalStackLayout>
+            <CheckBox IsChecked="{Binding BookIsFinished}" />
+            <Label Text="Da li si završio sa čitanjem?" VerticalOptions="Center" />
+        </HorizontalStackLayout>
+        <Button
+            Command="{Binding SaveBookCommand}"
+            Text="Spasi" />
+    </VerticalStackLayout>
+</ContentPage>

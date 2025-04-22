@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="KnjiskiMoljac.Views.BooksListingPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:model="clr-namespace:KnjiskiMoljac.Models"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:viewmodel="clr-namespace:KnjiskiMoljac.ViewModels"
+    x:DataType="viewmodel:BooksListingViewModel">
+
+    <ContentPage.Resources>
+        <toolkit:BoolToObjectConverter
+            x:Key="BoolToObjectConverter"
+            FalseObject="Još čitam 🙂"
+            TrueObject="Pročitao 😀" />
+    </ContentPage.Resources>
+    <ContentPage.Behaviors>
+        <toolkit:EventToCommandBehavior Command="{Binding GetBooksCommand}" EventName="Appearing" />
+    </ContentPage.Behaviors>
+
+    <Grid 
+        Margin="20" 
+        RowDefinitions="Auto,*"
+        RowSpacing="20">
+        <Grid ColumnDefinitions="*,*">
+            <Label 
+                FontAttributes="Bold"
+                FontSize="Title"
+                Text="Knjiški moljac" />
+            <Button 
+                Grid.Column="1"
+                HorizontalOptions="End"
+                Text="Dodaj" 
+                Command="{Binding AddBookCommand}" />
+        </Grid>
+
+        <CollectionView Grid.Row="1" ItemsSource="{Binding Books}">
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout ItemSpacing="4" Orientation="Vertical" />
+            </CollectionView.ItemsLayout>
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="model:Book">
+                    <Border
+                        Padding="15"
+                        Stroke="{StaticResource Gray200}"
+                        StrokeThickness="1"
+                        Background="{StaticResource Gray100}">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="20,20,20,20" />
+                        </Border.StrokeShape>
+                        <Grid RowDefinitions="Auto,*" RowSpacing="4">
+                            <Image
+                                Grid.Row="0"
+                                Aspect="AspectFit"
+                                HeightRequest="200"
+                                HorizontalOptions="Center"
+                                Source="{Binding ImageUrl}"
+                                VerticalOptions="Center" />
+
+                            <Grid Grid.Row="1" RowDefinitions="Auto,Auto,Auto">
+                                <Label
+                                    Grid.Row="0"
+                                    FontAttributes="Bold"
+                                    FontSize="Medium"
+                                    Text="{Binding Title}" />
+                                <Label
+                                    Grid.Row="1"
+                                    Margin="0,2"
+                                    FontSize="Small"
+                                    Text="{Binding Author}" />
+                                <Grid
+                                    Grid.Row="2"
+                                    Margin="0,5"
+                                    ColumnDefinitions="Auto,Auto,*">
+                                    <Button
+                                        Grid.Column="0"
+                                        BackgroundColor="{StaticResource Tertiary}"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:BooksListingViewModel}}, Path=UpdateBookCommand}"
+                                        CommandParameter="{Binding .}"
+                                        Text="Izmjeni" />
+                                    <Button
+                                        Grid.Column="1"
+                                        Margin="8,0"
+                                        BackgroundColor="#F44336"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:BooksListingViewModel}}, Path=DeleteBookCommand}"
+                                        CommandParameter="{Binding .}"
+                                        Text="Izbriši" />
+                                    <Label
+                                        Grid.Column="2"
+                                        HorizontalOptions="End"
+                                        Text="{Binding IsFinished, Converter={StaticResource BoolToObjectConverter}}"
+                                        LineBreakMode="TailTruncation"
+                                        TextColor="{StaticResource Tertiary}"
+                                        VerticalOptions="Center" />
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+    </Grid>
+
+</ContentPage>
